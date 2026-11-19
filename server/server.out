@@ -1,0 +1,5 @@
+[INIT] executando init-db...
+Banco inicializado com dados de exemplo (gratuito).
+[INIT] init-db concluido
+GS Stats Football rodando em http://localhost:3000
+Painel: http://localhost:3000/

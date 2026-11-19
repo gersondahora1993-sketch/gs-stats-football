@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#8b0000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="GS Stats Football - Analise e probabilidades de futebol, times, jogadores, finalizacoes, chutes a gol, desarmes, faltas, gols, escanteios, cartoes e impedimentos">
+  <title>GS Stats Football | Analise e Probabilidades</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.svg">
+  <link rel="apple-touch-icon" href="icons/icon-512.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+<body>
+
+  <!-- Loader -->
+  <div id="loader" class="loader">
+    <div class="loader-inner"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <button class="btn-menu" id="btnMenu" aria-label="Abrir menu">&#9776;</button>
+      <div class="logo">
+        <div class="logo-mark">GS</div>
+        <div class="logo-text">GS <span>Stats</span> <span style="color:#ffd700;">Football</span></div>
+      </div>
+      <div class="header-actions">
+        <div class="liga-select-wrap" style="display:none;">
+          <label class="liga-label" for="filtroLiga">Liga</label>
+          <select id="filtroLiga" class="select"></select>
+        </div>
+        <button class="btn-icon" id="btnRefresh" title="Atualizar dados">&#x21BB;</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Menu lateral -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-mini">GS</div>
+      <div style="color:#ffd700;font-weight:800;letter-spacing:1px;">Stats Football</div>
+    </div>
+    <ul class="nav-list">
+      <li><a class="nav-link active" data-section="dashboard"><span>&#x1F4CA;</span> Dashboard</a></li>
+      <li><a class="nav-link" data-section="times"><span>&#x1F3C6;&#xFE0F;</span> Times</a></li>
+      <li><a class="nav-link" data-section="jogadores"><span>&#x1F468;&#x200D;&#x2640;&#xFE0F;</span> Jogadores</a></li>
+      <li><a class="nav-link" data-section="partidas"><span>&#x270C;&#xFE0F;</span> Partidas</a></li>
+      <li><a class="nav-link" data-section="probabilidades"><span>&#x1F4B2;</span> Probabilidades</a></li>
+      <li><a class="nav-link" data-section="comparar"><span>&#x1F501;</span> Casas (br365 / 99Play)</a></li>
+      <li><a class="nav-link" data-section="config"><span>&#x2699;&#xFE0F;</span> Atualizacao</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <div style="font-size:11px;color:#ffd700;text-transform:uppercase;letter-spacing:1px;">gratuito</div>
+      <div style="font-size:11px;opacity:0.7;">GS Stats Football</div>
+      <div style="font-size:10px;opacity:0.5;margin-top:6px;">br365.io  •  99play.io</div>
+    </div>
+  </nav>
+
+  <!-- Conteudo principal -->
+  <main class="main" id="main">
+    <section class="section" id="section-dashboard">
+      <h1 class="section-title">Dashboard <span class="badge">Ao vivo</span></h1>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Times analisados</div>
+          <div class="stat-value" id="stat-times">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Jogadores cadastrados</div>
+          <div class="stat-value" id="stat-jogadores">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Partidas no banco</div>
+          <div class="stat-value" id="stat-partidas">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ultima atualizacao</div>
+          <div class="stat-value small" id="stat-atualizacao">-</div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <canvas id="chartGols"></canvas>
+        </div>
+        <div class="chart-card">
+          <canvas id="chartMercados"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card full">
+          <canvas id="chartForma"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="section hidden" id="section-times">
+      <div class="section-header">
+        <h1 class="section-title">Times</h1>
+        <input type="text" id="buscaTimes" placeholder="Buscar time..." class="search-input">
+      </div>
+      <div class="table-wrapper">
+        <table class="tabela" id="tabelaTimes">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>J</th><th>V</th><th>E</th><th>D</th>
+              <th>GM</th><th>GS</th>
+              <th>Finaliz.</th><th>Chute a gol</th>
+              <th>Escanteios +</th><th>Escanteios -</th>
+              <th>Faltas C.</th><th>Faltas S.</th>
+              <th>Cartoes</th><th>Imped.</th><th>Pts</th>
+            </tr>
+          </thead>
+          <tbody id="corpoTimes"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section hidden" id="section-jogadores">
+      <div class="section-header">
+        <h1 class="section-title">Jogadores</h1>
+        <input type="text" id="buscaJogadores" placeholder="Buscar jogador..." class="search-input">
+      </div>
+      <div class="table-wrapper">
+        <table class="tabela" id="tabelaJogadores">
+          <thead>
+            <tr>
+              <th>Jogador</th><th>Time</th><th>Pos.</th><th>J</th><th>Gols</th><th>Assist.</th>
+              <th>Finaliz.</th><th>Chute a gol</th><th>Cartoes</th>
+              <th>Faltas C.</th><th>Faltas S.</th><th>Imped.</th><th>Min.</th>
+            </tr>
+          </thead>
+          <tbody id="corpoJogadores"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section hidden" id="section-partidas">
+      <div class="section-header">
+        <h1 class="section-title">Partidas</h1>
+      </div>
+      <div class="table-wrapper" style="max-height:520px;">
+        <table class="tabela" id="tabelaPartidas">
+          <thead>
+            <tr>
+              <th>Mandante</th><th>Placar</th><th>Visitante</th>
+              <th>Finaliz. M</th><th>Finaliz. V</th>
+              <th>Escanteios M</th><th>Escanteios V</th>
+              <th>Cartoes M</th><th>Cartoes V</th>
+              <th>Data</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="corpoPartidas"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section hidden" id="section-probabilidades">
+      <div class="section-header">
+        <h1 class="section-title">Probabilidades (Poisson)</h1>
+        <p class="section-sub">Modelo gratuito baseado em gols esperados (xG) de ataque e defesa.</p>
+      </div>
+      <div class="matches-list" id="listaProbabilidades">
+        <!-- preenchido por JS -->
+      </div>
+    </section>
+
+    <section class="section hidden" id="section-comparar">
+      <div class="section-header">
+        <h1 class="section-title">Melhores entradas — 2 casas</h1>
+        <p class="section-sub">Comparacao de odds entre <b>BR365 (br365.io)</b> e <b>99Play (99play.io)</b>. Escolha a partida.</p>
+      </div>
+      <div class="selector-card">
+        <label>Partida</label>
+        <select id="selectOddsMatch" class="select"></select>
+      </div>
+      <div class="odds-grid" id="oddsGrid">
+        <!-- preenchido por JS -->
+      </div>
+    </section>
+
+    <section class="section hidden" id="section-config">
+      <div class="section-header">
+        <h1 class="section-title">Atualizacao automatica</h1>
+      </div>
+      <div class="card">
+        <p>O sistema atualiza estatisticas de times, jogadores e partidas <b>todos os dias automaticamente</b> (cron 06:00).</p>
+        <button class="btn btn-primary" id="btnUpdateNow">Forcar atualizacao agora</button>
+        <div id="msgUpdate" class="msg"></div>
+        <div class="divider"></div>
+        <p style="font-size:13px;opacity:0.8;"><b>Instalacao Android:</b> Abra no Chrome do Android e toque em "Instalar app" / "Adicionar a tela de inicio". O app funciona como PWA (offline parcial).</p>
+        <p style="font-size:12px;opacity:0.6;">Dados de exemplo gratuitos. Para odds reais, conecte as APIs de br365.io e 99play.io no servidor.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => console.log('SW registrado', reg.scope)).catch((err) => console.log('SW erro', err));
+      });
+    }
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>
